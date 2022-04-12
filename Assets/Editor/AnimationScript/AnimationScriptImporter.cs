@@ -7,10 +7,11 @@ namespace AnimationScript{
     [ScriptedImporter(1, "as")]
     public class AnimationScriptImporter : ScriptedImporter
     {
-        private Compiler compiler = new Compiler();
         public override void OnImportAsset(AssetImportContext ctx){
-            compiler.Compile(ctx.assetPath);
             AnimationScriptModule module = ScriptableObject.CreateInstance<AnimationScriptModule>();
+            Compiler compiler = new Compiler(ctx.assetPath);
+            compiler.Compile(ctx.assetPath, module);
+            compiler.CompilerResult.Print();
             ctx.AddObjectToAsset("module", module);
             ctx.SetMainObject(module);
         }

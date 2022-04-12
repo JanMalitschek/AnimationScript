@@ -12,14 +12,25 @@ namespace AnimationScript{
                 string currentWord = string.Empty;
                 for(int col = 0; col < lines[line].Length; col++){
                     if(currentWord == string.Empty){
-                        if(lines[line][col] != ' ')
+                        if(lines[line][col] != ' '){
                             currentWord += lines[line][col];
+                            //Special case for one character words at the beginning of a line
+                            if(col == (lines[line].Length - 1)){
+                                //Word completed
+                                if(currentWord.StartsWith("#"))
+                                    goto Comment;
+                                else{
+                                    tokens.Add(new Token(currentWord, line + 1, col));
+                                }
+                                currentWord = string.Empty;
+                            }
+                        }
                     }
                     else{
                         if(lines[line][col] != ' '){
                             currentWord += lines[line][col];
                             if(col == (lines[line].Length - 1)){
-                                tokens.Add(new Token(currentWord, (uint)line + 1, (uint)col));
+                                tokens.Add(new Token(currentWord, line + 1, col));
                                 currentWord = string.Empty;
                             }
                         }
@@ -28,7 +39,7 @@ namespace AnimationScript{
                             if(currentWord.StartsWith("#"))
                                 goto Comment;
                             else{
-                                tokens.Add(new Token(currentWord, (uint)line + 1, (uint)col));
+                                tokens.Add(new Token(currentWord, line + 1, col));
                             }
                             currentWord = string.Empty;
                         }

@@ -5,6 +5,6 @@ using UnityEngine;
 namespace AnimationScript{
     public class AnimationScriptModule : ScriptableObject
     {
-        
+        public Timeline timeline = new Timeline();
     }
 }
