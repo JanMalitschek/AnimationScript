@@ -22,13 +22,9 @@ namespace AnimationScript{
             // serializedObject.Update();
             
             if(EditorGUI.EndChangeCheck()){
-                runtime.targets.Clear();
-                if(runtime.module != null){
-                    foreach(TimelineClip clip in runtime.module.timeline.targetClips)
-                        runtime.targets.Add(new RuntimeTarget(clip.target));
-                    EditorUtility.SetDirty(runtime);
-                }
                 serializedObject.ApplyModifiedProperties();
+                runtime.FindTargets();
+                EditorUtility.SetDirty(runtime);
             }
 
             showTargets = EditorGUILayout.Foldout(showTargets, "Targets", EditorStyles.foldoutHeader);
@@ -36,7 +32,10 @@ namespace AnimationScript{
                 EditorGUI.indentLevel++;
                 for(int i = 0; i < targetsProperty.arraySize; i++){
                     SerializedProperty targetProperty = targetsProperty.GetArrayElementAtIndex(i);
+                    EditorGUI.BeginChangeCheck();
                     EditorGUILayout.PropertyField(targetProperty.FindPropertyRelative("target"), new GUIContent(targetProperty.FindPropertyRelative("name").stringValue));
+                    if(EditorGUI.EndChangeCheck())
+                        runtime.FindPropertyInfos();
                 }
                 EditorGUI.indentLevel--;
             }
